@@ -5462,7 +5462,7 @@ kind: "FittableRows",
 classes: "app",
 userId: "",
 petList: [],
-REVISION: 43,
+REVISION: 44,
 PET_NAME: [ "German Shepherd", "Cavalier King Charles", "Labrador Retriever", "Boxer", "Akita", "Pug", "Chihuahua", "Collie", "Dalmatian", "Jack Russell Terrier", "St. Bernard", "Husky", "Tiger", "Panda", "Robot Dog" ],
 PET_FOOD: {
 cookie: 1,
@@ -5629,7 +5629,13 @@ getPetListAndRefreshUI: function() {
 this.getPetList(this.userId, enyo.bind(this, function(e) {
 this.petList = e, this.refreshList(), this.timerStart(), this.blockUI(null);
 }), enyo.bind(this, function(e) {
-this.blockUI(null), this.petList = [], this.refreshList(), this.alert(e);
+this.blockUI(null), this.petList = [], this.refreshList();
+if (e === "err_revision") {
+this.REVISION++;
+if (this.REVISION < 50) return console.log("try to upgrade revision to " + this.REVISION), this.getPetListAndRefreshUI();
+console.error("Upgrade revision over than 50 failed");
+}
+this.alert("fetch pet list failure: " + e);
 }));
 },
 getUserInfoByUserNameOrId: function(e, t, n) {
@@ -5723,7 +5729,7 @@ if (Array.isArray(t)) {
 r(t);
 return;
 }
-i("fetch pet list failure: " + e);
+i(e);
 });
 });
 s(15);
